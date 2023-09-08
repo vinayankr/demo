@@ -2,26 +2,74 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GitHub Issues Count</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Issues Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .dashboard {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .label {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 18px;
+            background-color: #3498db;
+            color: #fff;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Number of 'bug' issues:</h1>
-    <p id="issueCount">Loading...</p>
-    
+    <div class="dashboard">
+        <h1>GitHub Issues Dashboard</h1>
+        <div class="label" id="bug">Loading...</div>
+        <div class="label" id="enhancement">Loading...</div>
+    </div>
+
     <script>
         const repoOwner = 'vinayankr'; // Your GitHub username or organization name
         const repoName = 'planning';    // Your repository name
 
-        fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/issues?labels=bug`)
-            .then(response => response.json())
-            .then(issues => {
-                const issueCount = issues.length;
-                document.getElementById('issueCount').textContent = issueCount;
-            })
-            .catch(error => {
-                console.error('Error fetching issues:', error);
-                document.getElementById('issueCount').textContent = 'Error';
-            });
+        function fetchIssueCount(label) {
+            return fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/issues?labels=${label}`)
+                .then(response => response.json())
+                .then(issues => issues.length)
+                .catch(error => {
+                    console.error('Error fetching issues:', error);
+                    return 'Error';
+                });
+        }
+
+        async function updateDashboard() {
+            const bugCount = await fetchIssueCount('bug');
+            const enhancementCount = await fetchIssueCount('enhancement');
+
+            document.getElementById('bugLabel').textContent = `Bugs: ${bugCount}`;
+            document.getElementById('enhancementLabel').textContent = `Enhancements: ${enhancementCount}`;
+        }
+
+        updateDashboard();
     </script>
 </body>
 </html>
