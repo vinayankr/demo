@@ -1,1 +1,31 @@
-<h1>This is sample page</h1>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GitHub Issues Count</title>
+</head>
+<body>
+    <h1>This is sample page</h1>
+    <h1>Number of 'bug' issues:</h1>
+    <p id="issueCount">Loading...</p>
+    
+    <script>
+        const repoOwner = 'vinayankr'; // Your GitHub username or organization name
+        const repoName = 'planning';    // Your repository name
+
+        fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/issues?labels=bug`)
+            .then(response => response.json())
+            .then(issues => {
+                const issueCount = issues.length;
+                document.getElementById('issueCount').textContent = issueCount;
+            })
+            .catch(error => {
+                console.error('Error fetching issues:', error);
+                document.getElementById('issueCount').textContent = 'Error';
+            });
+    </script>
+</body>
+</html>
+
